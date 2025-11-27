@@ -7,6 +7,7 @@ const cors = require("cors");
 
 const authRoutes = require("./rotues/auth");
 const postRoutes = require("./rotues/posts");
+const userRoutes = require("./rotues/users");
 
 mongoose.connect(process.env.MONGO_URI)
 .then(() => console.log("Povezan sa bazom."))
@@ -21,5 +22,6 @@ app.get("/", (req, res) => {
 
 app.use("/auth", authRoutes);
 app.use("/posts", postRoutes);
+app.use("/users", userRoutes);
 
 app.listen(3000);

@@ -38,5 +38,16 @@ async function authorizationPost(req, res, next) {
     }
 }
 
+async function authorization(req, res, next) {
+  try {
+      if (req.user.role != "admin") {
+        return res.status(401).json({ message: "Niste autentifikovani." });
+      }
+      next();
 
-module.exports = { auth, authorizationPost };
+  } catch (err) {
+    return res.status(401).json({ message: 'Nemate pristup.'});
+  }
+}
+
+module.exports = { auth, authorizationPost, authorization };
