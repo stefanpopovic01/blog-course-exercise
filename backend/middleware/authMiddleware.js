@@ -1,5 +1,6 @@
 const jwt = require("jsonwebtoken");
 const Post = require("../models/Post");
+const User = require("../models/User");
 
 function auth(req, res, next) {
   const header = req.headers.authorization;
@@ -41,7 +42,7 @@ async function authorizationPost(req, res, next) {
 async function authorization(req, res, next) {
   try {
       if (req.user.role != "admin") {
-        return res.status(401).json({ message: "Niste autentifikovani." });
+        return res.status(401).json({ message: "Niste autorizovani." });
       }
       next();
 
@@ -50,4 +51,24 @@ async function authorization(req, res, next) {
   }
 }
 
-module.exports = { auth, authorizationPost, authorization };
+async function blockAdminDelete(req, res, next) {
+  try {
+    const userToDelete = await User.findById(req.params.id);
+
+    if (!userToDelete) {
+      return res.status(404).json({ message: "Korisnik nije pronadjen." });
+    }
+
+    if (userToDelete.role === "admin") {
+      return res.status(403).json({ message: "Ne možeš obrisati admin korisnika." });
+    }
+
+    next();
+
+  } catch (err) {
+    res.status(500).json({ message: "Greška pri proveri korisnika." });
+  }
+}
+
+
+module.exports = { auth, authorizationPost, authorization, blockAdminDelete };

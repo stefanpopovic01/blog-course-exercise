@@ -19,8 +19,16 @@ const postSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "User", // ref na User model
     },
+    deleted: {
+      type: Boolean,
+      default: false
+    }
   },
   { timestamps: true }
 );
+
+// postSchema.pre(/^find/, function (next) {
+//   this.where({ deleted: false })
+// });
 
 module.exports = mongoose.model("Post", postSchema);

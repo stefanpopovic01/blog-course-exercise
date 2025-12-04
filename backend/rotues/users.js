@@ -1,11 +1,15 @@
 const express = require("express");
 const router = express.Router();
 const User = require("../models/User");
-const { auth, authorizationPost, authorization } = require("../middleware/authMiddleware");
+const { auth, authorizationPost, authorization, blockAdminDelete } = require("../middleware/authMiddleware");
 
 router.get("/", auth, authorization, async (req, res) => {
     try {
-        const users = await User.find();
+        const filters = {};
+
+        if (req.query.role) filters.role = req.query.role; //  GET /users?role=admin
+
+        const users = await User.find(filters);
         res.json(users);
 
     } catch (err) {
@@ -24,7 +28,7 @@ router.get("/:id", auth, async (req, res) => {
     }
 });
 
-router.delete("/:id", auth, authorization, async (req, res) => {
+router.delete("/:id", auth, authorization, blockAdminDelete, async (req, res) => {
     try {
         const deletedUser = await User.findByIdAndDelete(req.params.id);
         if (!deletedUser) res.status(404).json({ message: "Korisnik nije pronadjen."});

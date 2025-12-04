@@ -5,8 +5,32 @@ const { auth, authorizationPost } = require("../middleware/authMiddleware");
 
 router.get("/", async (req, res) => {
   try {
-    const posts = await Post.find().sort({ createdAt: -1 });
-    res.status(200).json(posts);
+
+    const limit = 6;
+    const page = Number(req.query.page) || 1;
+
+    const { search } = req.query;
+
+    let query = {};
+
+    if (search) {
+      query.title = {  $regex: search, $options: "i" }
+    }
+
+    const posts = await Post.find(query)
+    .sort({ createdAt: -1 })
+    .skip((page - 1) * limit)
+    .limit(limit);
+
+    const total = await Post.countDocuments(query);
+    const totalPages = Math.ceil(total / limit);
+
+    res.status(200).json({
+      posts,
+      total,
+      totalPages,
+      page
+    });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }

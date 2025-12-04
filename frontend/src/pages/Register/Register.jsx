@@ -4,6 +4,8 @@ import { useState } from "react";
 import "./Register.css";
 import axios from "axios";
 
+import { register } from "../../api/services/authService";
+
 const Register = () => {
 
   const [username, setUsername] = useState("");
@@ -19,16 +21,10 @@ const Register = () => {
     e.preventDefault();
 
     try {
-      const res = await axios.post("http://localhost:3000/auth/register", {
-        username,
-        email,
-        password
-      })
+      const res = await register({ username, email, password });
 
       setSuccess(true);
       setError("");
-
-
 
     } catch (err) {
       setError("Doslo je do greske.");

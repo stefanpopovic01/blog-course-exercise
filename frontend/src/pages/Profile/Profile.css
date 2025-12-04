@@ -1,9 +1,60 @@
-.profile-containter{
-    width: 99%;
-    height: 99vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    color: rgb(0, 0, 0);
+.profile-box {
+  width: 260px;
+  background: white;
+  padding: 15px;
+  border-radius: 8px;
+  box-shadow: 0 3px 8px rgba(0,0,0,0.1);
+  margin: auto;
+  margin-top: 40px;
+}
+
+.profile-title {
+  color: #1e3a8a; 
+  font-size: 18px;
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+.profile-item {
+  font-size: 14px;
+  color: #333;
+  margin: 4px 0;
+}
+
+.profile-action-btn {
+  width: 100%;
+  background: #1e3a8a; 
+  border: none;
+  padding: 8px;
+  color: white;
+  border-radius: 6px;
+  font-size: 14px;
+  margin-top: 8px;
+  cursor: pointer;
+}
+
+.profile-action-btn:hover {
+  opacity: 0.9;
+}
+
+.users-list {
+  margin-top: 10px;
+  font-size: 13px;
+  color: #444;
+  background: #f8f8f8;
+  padding: 8px;
+  border-radius: 6px;
+  max-height: 170px;
+  overflow-y: auto;
+}
+
+.users-list p i {
+  cursor: pointer;
+  color: #1e3a8a; 
+  font-size: 15px;
+}
+
+.users-list p i:hover{
+  scale: 1.1;
+  color: rgb(241, 60, 60);
 }

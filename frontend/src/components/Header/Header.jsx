@@ -2,12 +2,18 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import "./Header.css";
 
-
 const Header = () => {
 
   const navigate = useNavigate();
   const token = localStorage.getItem("accessToken");
  
+  const handleLogout = () => {
+
+    localStorage.removeItem("accessToken"); 
+    localStorage.removeItem("user");
+    navigate("/login");
+
+  };
 
   return (
     <header className="header">
@@ -22,8 +28,8 @@ const Header = () => {
         </nav>
         
         <div className="auth-buttons">
-          <button className="login-btn" onClick={() => navigate("/login")}>{token ? "Profile" : "Login"}</button> {/* token ? Samo radi UI-a, inace bi bilo samo "login", ovo je kako bi izgledao header u buducnosti kad se korisnik loguje, bice promenjeno :) */}
-          <button className="register-btn" onClick={() => navigate("/register")}>{token ? "Logout" : "Register"}</button> {/* Samo radi UI-a, kako bi izgledao Logout button u buducnosti kad se korisnik loguje*/}
+          <button className="login-btn" onClick={() => navigate(token ? "/profile" : "/login") }>{token ? "Profile" : "Login"}</button>
+          <button className="register-btn" onClick={() => { token ? handleLogout() : navigate("/register")}}>{token ? "Logout" : "Register"}</button>
         </div>
       </div>
     </header>

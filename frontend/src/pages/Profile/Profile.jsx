@@ -1,54 +1,77 @@
 import React, { useState } from "react";
-import axios from "axios";
 import "./Profile.css";
-import { AuthContext } from "../../contex/AuthContex";
-
-const getUsers = async () => {
-
-    const token = localStorage.getItem("accessToken");
-  const user = JSON.parse(localStorage.getItem("user"));
-  try {
-
-    const { data } = await axios.get("http://localhost:3000/users",
-        {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-        }
-
-
-
-
-
-    );
-
-    console.log(data);
-  } catch (err) {
-      console.error("Greška prilikom učitavanja usera:", err.response ? err.response.data : err.message);
-  }
-
-
-}
-
-
-
+import { getUsers } from "../../api/services/userService";
+import { deleteUser } from "../../api/services/userService";
 
 const Profile = () => {
-
-    // zahtev axios za get users i user
-
-  const token = localStorage.getItem("accessToken");
   const user = JSON.parse(localStorage.getItem("user"));
+  const [users, setUsers] = useState(null);
+  const [acess, setAcess] = useState(user.role === "admin");
+
+  const getUsers1 = async (filters = {}) => {
+    try {
+      const { data } = await getUsers(filters);
+      setUsers(data);
+      console.log(data);
+
+    } catch (err) {
+      console.error("Greška prilikom učitavanja usera:", err.response ? err.response.data : err.message);
+    }
+  };
+
+  const handleDelete = async (id) => {
+    try {
+      const { data } = await deleteUser(id);
+      getUsers1();
+
+      console.log({data: data, message: "Obrisan"})
+
+    } catch (err) {
+      console.error("Greška prilikom brisanja usera:", err.response ? err.response.data : err.message);
+    }
+
+
+  }
 
   return (
-    <div className="profile-containter">
+    <div className="profile-containter"> 
 
-        <p>{user.name}</p> 
-        <p>{user.email}</p>
-        <p>{user.role}</p>
-        <button onClick={getUsers}>Get all users</button> {/* consol loga samo podatke */ }
+      <div className="profile-box">
+        <h2 className="profile-title">User Profile</h2>
 
+        {user && (
+          <>
+            <p className="profile-item"><strong>Name:</strong> {user.name.charAt(0).toUpperCase() + user.name.slice(1)}</p>
+            <p className="profile-item"><strong>Email:</strong> {user.email.charAt(0).toUpperCase() + user.email.slice(1)}</p>
+            <p className="profile-item"><strong>Role:</strong> {user.role.charAt(0).toUpperCase() + user.role.slice(1)}</p>
+          </>
+        )}
 
+        {acess && (<button className="profile-action-btn" onClick={() => getUsers1()}>
+          <i className="fas fa-users"></i> Load All Users
+        </button>
+        )}
+        {acess && (<button className="profile-action-btn" onClick={() => getUsers1({ role: "admin" })}>
+          <i className="fas fa-users"></i> Load Admins
+        </button>
+        )}
+
+        {users && (
+          <div className="users-list">
+            <h3>Users:</h3>
+            {users.map(u => (
+              <p key={u._id}>
+                • {u.email} ({u.role}) 
+
+                {u.role !== "admin" && (
+                  <i className="fas fa-trash" style={{paddingLeft: "10px"}} onClick={() => handleDelete(u._id)}></i>
+                )}
+
+              </p>
+            ))}
+          </div>
+        )}
+      </div>
 
     </div>
   );

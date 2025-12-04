@@ -6,6 +6,8 @@ import axios from "axios";
 import { AuthContext } from "../../contex/AuthContex";
 import { useContext } from "react";
 
+import { login } from "../../api/services/authService";
+
 const Login = () => {
   
   const [email, setEmail] = useState("");
@@ -21,10 +23,7 @@ const Login = () => {
 
     try {
 
-      const res = await axios.post("http://localhost:3000/auth/login", {
-        email,
-        password,
-      });
+      const res = await login({ email, password });
 
       console.log("Ulogovan:");
       setError("");
@@ -34,7 +33,9 @@ const Login = () => {
       navigate("/");
 
     } catch (err) {
-      setError("Pogrešan email ili lozinka.");
+      setError(
+        err.response?.data?.message || "Greska prilikom logovanja."
+      )
     }
   }
 
